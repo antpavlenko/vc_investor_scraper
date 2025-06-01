@@ -1,38 +1,57 @@
 from setuptools import setup, find_packages
+import os
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+# Read README file
+def read_readme():
+    with open("README.md", "r", encoding="utf-8") as fh:
+        return fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
+# Read requirements
+def read_requirements():
+    with open("requirements.txt", "r", encoding="utf-8") as fh:
+        return [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="vcsheet-scraper",
+    name="vc-investor-scraper",
     version="1.0.0",
     author="Anton Pavlenko",
     author_email="apavlenko@hmcorp.fund",
-    description="A Python tool for scraping investor data from vcsheet.com",
-    long_description=long_description,
+    description="A powerful Python tool to scrape VC investor data from VCSheet.com with Odoo CRM integration",
+    long_description=read_readme(),
     long_description_content_type="text/markdown",
+    url="https://github.com/antonpavlenko/vc-investor-scraper",
+    project_urls={
+        "Bug Reports": "https://github.com/antonpavlenko/vc-investor-scraper/issues",
+        "Source": "https://github.com/antonpavlenko/vc-investor-scraper",
+        "Documentation": "https://github.com/antonpavlenko/vc-investor-scraper#readme",
+    },
     packages=find_packages(),
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
+        "Intended Audience :: Financial and Insurance Industry",
+        "Topic :: Office/Business :: Financial :: Investment",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+        "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
-    install_requires=requirements,
+    keywords="vc venture capital investors scraper odoo crm vcsheet fintech startup",
+    python_requires=">=3.7",
+    install_requires=read_requirements(),
     entry_points={
         "console_scripts": [
+            "vc-investor-scraper=vcsheet_scraper.scraper:main",
             "vcsheet-scraper=vcsheet_scraper.scraper:main",
         ],
     },
+    include_package_data=True,
+    zip_safe=False,
 )

@@ -1,12 +1,18 @@
 # VC Investor Scraper
 
+[![PyPI version](https://badge.fury.io/py/vc-investor-scraper.svg)](https://badge.fury.io/py/vc-investor-scraper)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A powerful Python tool to scrape investor data from [VCSheet.com](https://vcsheet.com) and export to CSV format or upload directly to Odoo CRM via API.
 
-## Features
+Perfect for **startups**, **investment firms**, and **business development teams** looking to build comprehensive investor databases.
+
+## 🚀 Features
 
 - 🔍 **Smart Keyword Filtering**: Search for investors by keywords (e.g., "fintech", "AI", "marketing")
 - 📊 **Complete Data Extraction**: Extracts names, companies, emails, social media links, investment focus, and stages
-- 📁 **Multiple Export Options**: 
+- 📁 **Multiple Export Options**:
   - Standard CSV format
   - Odoo CRM-compatible CSV format
   - Direct Odoo API upload
@@ -14,43 +20,64 @@ A powerful Python tool to scrape investor data from [VCSheet.com](https://vcshee
 - 🔄 **Full Pagination**: Scrapes all pages (35+ pages, 1000+ investors)
 - 🛡️ **Robust Error Handling**: Handles network issues, parsing errors, and API failures gracefully
 - ⚡ **Rate Limiting**: Built-in delays to respect website resources
+- 🌐 **Cross-Platform**: Works on Windows, macOS, and Linux
 
-## Installation
+## 📦 Installation
 
-1. **Clone the repository**:
+### From PyPI (Recommended)
 ```bash
-git clone https://github.com/yourusername/vc_investor_scraper.git
-cd vc_investor_scraper
+pip install vc-investor-scraper
 ```
 
-2. **Install dependencies**:
+### From Source
 ```bash
-pip install -r requirements.txt
-```
-
-3. **Install the package** (optional):
-```bash
+git clone https://github.com/antonpavlenko/vc-investor-scraper.git
+cd vc-investor-scraper
 pip install -e .
 ```
 
-## Quick Start
+### Requirements
+- Python 3.7+
+- Internet connection
+- Optional: Odoo instance for CRM integration
 
-### Basic CSV Export
+## ⚡ Quick Start
+
+### Command Line Interface
+After installation, you can use the tool directly from the command line:
+
 ```bash
-# Export all investors
-python -m vcsheet_scraper.scraper -o all_investors.csv
+# Export all investors to CSV
+vc-investor-scraper -o all_investors.csv
 
 # Export investors with specific keywords
-python -m vcsheet_scraper.scraper -k "fintech" "AI" -o fintech_ai_investors.csv
+vc-investor-scraper -k "fintech" "AI" -o fintech_ai_investors.csv
 
 # Export in Odoo-compatible format
-python -m vcsheet_scraper.scraper -k "marketing" -o marketing_investors.csv --odoo
+vc-investor-scraper -k "marketing" -o marketing_investors.csv --odoo
+```
+
+### Python API
+```python
+from vcsheet_scraper import VCSheetScraper
+
+# Create scraper instance
+scraper = VCSheetScraper()
+
+# Get all investors
+investors = scraper.get_investors()
+
+# Get investors with keywords
+ai_investors = scraper.get_investors(keywords=["AI", "machine learning"])
+
+# Save to CSV
+scraper.save_to_csv(investors, "investors.csv")
 ```
 
 ### Direct Odoo Upload
 ```bash
 # Upload to Odoo CRM
-python -m vcsheet_scraper.scraper -k "AI research" --odoo-upload \
+vc-investor-scraper -k "AI research" --odoo-upload \
   --odoo-url "https://your-odoo.com" \
   --odoo-db "your_database" \
   --odoo-user "your_username" \
@@ -59,26 +86,31 @@ python -m vcsheet_scraper.scraper -k "AI research" --odoo-upload \
   --odoo-user-assign "Your Name"
 ```
 
-## Usage Examples
+## 📋 Usage Examples
 
 ### 1. Marketing Investors
 ```bash
-python -m vcsheet_scraper.scraper -k "marketing" -o marketing_investors.csv --odoo
+vc-investor-scraper -k "marketing" -o marketing_investors.csv --odoo
 ```
 
 ### 2. AI & Machine Learning Investors
 ```bash
-python -m vcsheet_scraper.scraper -k "AI" "machine learning" -o ai_ml_investors.csv
+vc-investor-scraper -k "AI" "machine learning" -o ai_ml_investors.csv
 ```
 
 ### 3. Early Stage Investors
 ```bash
-python -m vcsheet_scraper.scraper -k "seed" "pre-seed" -o early_stage_investors.csv
+vc-investor-scraper -k "seed" "pre-seed" -o early_stage_investors.csv
 ```
 
-### 4. Upload to Odoo with Team Assignment
+### 4. Fintech Investors with Geographic Focus
 ```bash
-python -m vcsheet_scraper.scraper -k "fintech" --odoo-upload \
+vc-investor-scraper -k "fintech" "payments" "blockchain" -o fintech_investors.csv
+```
+
+### 5. Upload to Odoo with Team Assignment
+```bash
+vc-investor-scraper -k "fintech" --odoo-upload \
   --odoo-url "https://your-company.odoo.com" \
   --odoo-db "production" \
   --odoo-user "admin" \
@@ -87,6 +119,24 @@ python -m vcsheet_scraper.scraper -k "fintech" --odoo-upload \
   --odoo-stage "New" \
   --odoo-team "Investment Team" \
   --odoo-user-assign "john.doe@company.com"
+```
+
+### 6. Python Script Integration
+```python
+from vcsheet_scraper import VCSheetScraper, OdooAPI
+
+# Initialize scraper
+scraper = VCSheetScraper()
+
+# Get fintech investors
+fintech_investors = scraper.get_investors(keywords=["fintech", "payments"])
+
+# Upload to Odoo
+odoo = OdooAPI("https://your-odoo.com", "db", "user", "password")
+odoo.authenticate()
+lead_ids = odoo.create_leads(fintech_investors, default_team="Sales Team")
+
+print(f"Created {len(lead_ids)} leads in Odoo")
 ```
 
 ## Command Line Options
@@ -150,7 +200,7 @@ External ID,Name,Company Name,Contact Name,Email,Job Position,Phone,Mobile,Stree
 - UTM source tracking ("VCSheet.com")
 - Optional stage, team, and user assignment
 
-## Data Extracted
+## 📊 Data Extracted
 
 For each investor, the scraper extracts:
 
@@ -158,6 +208,20 @@ For each investor, the scraper extracts:
 - **Professional**: Investment focus areas, stages, bio/description
 - **Social Media**: LinkedIn, Twitter, Crunchbase, YouTube profiles
 - **Metadata**: Source tracking, external IDs
+
+### Sample Data Output
+```csv
+name,company,website,description,focus,stage,email,linkedin,twitter
+John Doe,Acme Ventures,https://acme.vc,"Partner at Acme Ventures focusing on early-stage startups","AI, SaaS","Seed, Series A",john@acme.vc,linkedin.com/in/johndoe,twitter.com/johndoe
+```
+
+## 🎯 Use Cases
+
+- **Startup Fundraising**: Build targeted investor lists for your industry
+- **Business Development**: Identify potential partners and advisors
+- **Market Research**: Analyze investment trends and focus areas
+- **CRM Integration**: Automatically populate your sales pipeline
+- **Lead Generation**: Create comprehensive prospect databases
 
 ## Error Handling
 
@@ -174,26 +238,47 @@ The scraper includes robust error handling for:
 - Respectful scraping practices
 - Configurable timeouts and retries
 
-## Contributing
+## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+We welcome contributions! Here's how you can help:
 
-## License
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes**
+4. **Add tests** if applicable
+5. **Commit your changes**: `git commit -m 'Add amazing feature'`
+6. **Push to the branch**: `git push origin feature/amazing-feature`
+7. **Submit a pull request**
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Development Setup
+```bash
+git clone https://github.com/antonpavlenko/vc-investor-scraper.git
+cd vc-investor-scraper
+pip install -e ".[dev]"
+```
 
-## Disclaimer
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
 
 This tool is for educational and business purposes. Please respect VCSheet.com's terms of service and use responsibly. The authors are not responsible for any misuse of this tool.
 
-## Support
+## 🆘 Support
 
-For issues, questions, or contributions, please open an issue on GitHub.
+- **Documentation**: [GitHub README](https://github.com/antonpavlenko/vc-investor-scraper#readme)
+- **Issues**: [GitHub Issues](https://github.com/antonpavlenko/vc-investor-scraper/issues)
+- **PyPI**: [Package Page](https://pypi.org/project/vc-investor-scraper/)
+
+## 🏆 Acknowledgments
+
+- Built for the startup and investment community
+- Inspired by the need for better investor discovery tools
+- Thanks to VCSheet.com for providing comprehensive investor data
 
 ---
 
 **Made with ❤️ for the startup ecosystem**
+
+*Star ⭐ this repo if you find it useful!*
